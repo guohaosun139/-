@@ -1,9 +1,9 @@
 import { DRINKS, TEXTS, THRESHOLDS } from "./data.js";
 
 const createInitialState = () => ({
-  mood: 0,
+  moomood: 30,
   glow: 0,
-  storyUnlocked: false,
+  storyUnlocked: false,行
   soothed: false,
   storyText: TEXTS.intro,
 });
@@ -19,8 +19,8 @@ export function createGame() {
     const drink = DRINKS[drinkKey];
     if (!drink) return getState();
 
-    state.mood += drink.moodGain;
 
+state.mood = Math.min(100, state.mood + drink.moodGain);
     if (!state.storyUnlocked && state.mood >= THRESHOLDS.storyUnlock) {
       state.storyUnlocked = true;
       state.storyText = TEXTS.storyUnlocked;
