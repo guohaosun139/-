@@ -1,192 +1,83 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>夜归小站 Night Station - MVP</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夜归小站 Night Station</title>
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #111827, #030712);
-      color: #f9fafb;
+      background: #101827;
+      color: #fff;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       padding: 24px;
     }
-
-    .station {
-      width: min(920px, 100%);
-      border: 1px solid rgba(147, 197, 253, 0.25);
+    main {
+      width: min(720px, 100%);
+      background: #172033;
+      border: 1px solid #334155;
       border-radius: 18px;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(28, 43, 76, 0.96), rgba(15, 24, 45, 0.96));
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.35);
     }
-
-    .header {
-      padding: 18px 22px;
-      border-bottom: 1px solid rgba(147, 197, 253, 0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    h1 { margin: 0; font-size: 24px; }
-
-    .stats {
-      display: flex;
-      gap: 16px;
-      font-size: 15px;
-      color: #dbeafe;
-    }
-
+    h1 { margin-top: 0; }
     .scene {
-      min-height: 360px;
-      padding: 32px;
-      background:
-        radial-gradient(circle at 75% 20%, rgba(253, 224, 71, 0.18), transparent 18%),
-        linear-gradient(180deg, rgba(30, 41, 59, 0.2), rgba(3, 7, 18, 0.6));
-      position: relative;
-    }
-
-    .moon {
-      width: 72px;
-      height: 72px;
-      border-radius: 999px;
-      background: #f8fafc;
-      box-shadow: 0 0 40px rgba(248, 250, 252, 0.5);
-      position: absolute;
-      right: 40px;
-      top: 36px;
-    }
-
-    .visitor {
-      width: 84px;
-      height: 120px;
-      border-radius: 42px 42px 18px 18px;
-      background: linear-gradient(180deg, #94a3b8, #475569);
-      position: absolute;
-      left: 50%;
-      bottom: 110px;
-      transform: translateX(-50%);
-      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.35);
-    }
-
-    .visitor::before {
-      content: "";
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      background: #cbd5e1;
-      position: absolute;
-      left: 15px;
-      top: -34px;
-    }
-
-    .counter {
-      position: absolute;
-      left: 32px;
-      right: 32px;
-      bottom: 32px;
-      min-height: 110px;
-      border-radius: 16px;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      padding: 20px;
-    }
-
-    .panel {
-      padding: 22px;
-      display: grid;
-      gap: 16px;
-      background: rgba(15, 23, 42, 0.92);
-    }
-
-    .story {
-      min-height: 72px;
-      line-height: 1.7;
-      color: #e5e7eb;
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.24);
+      min-height: 180px;
       border-radius: 14px;
+      background: linear-gradient(180deg, #1e293b, #020617);
+      display: grid;
+      place-items: center;
+      margin: 18px 0;
+    }
+    .visitor {
+      width: 72px;
+      height: 96px;
+      border-radius: 36px 36px 16px 16px;
+      background: #94a3b8;
+    }
+    .story {
+      line-height: 1.7;
+      background: #0f172a;
+      border-radius: 12px;
       padding: 16px;
+      margin: 16px 0;
     }
-
-    .hint {
-      color: #bfdbfe;
-      font-size: 14px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
     button {
       border: 0;
       border-radius: 999px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      color: #0f172a;
+      padding: 12px 16px;
+      margin: 6px;
       background: #fde68a;
-      transition: transform 0.15s ease, filter 0.15s ease;
+      color: #111827;
+      font-size: 15px;
     }
-
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
-    }
-
     #resetBtn { background: #c7d2fe; }
-
-    .good {
-      color: #86efac;
-      font-weight: 700;
-    }
   </style>
 </head>
 <body>
-  <main class="station">
-    <header class="header">
-      <h1>夜归小站 Night Station</h1>
-      <div class="stats">
-        <span>当前情绪值：<strong id="moodValue">30</strong></span>
-        <span>微光数量：<strong id="glowValue">0</strong></span>
-      </div>
-    </header>
+  <main>
+    <h1>夜归小站 Night Station</h1>
+    <p>当前情绪值：<strong id="moodValue">30</strong></p>
+    <p>微光数量：<strong id="glowValue">0</strong></p>
 
-    <section class="scene" aria-label="夜晚小站场景">
-      <div class="moon"></div>
-      <div class="visitor" aria-label="夜归访客"></div>
-      <div class="counter">
-        夜色深了，给晚归的人一杯温热的安慰。
-      </div>
+    <section class="scene">
+      <div class="visitor"></div>
     </section>
 
-    <section class="panel">
-      <div id="storyText" class="story">
-        访客沉默地坐在站台边，似乎在等一句可以落地的话。
-      </div>
+    <div id="storyText" class="story">
+      访客沉默地坐在站台边，似乎在等一句可以落地的话。
+    </div>
 
-      <div id="statusHint" class="hint">
-        提示：情绪达到 60 解锁故事，达到 90 获得 1 点微光。
-      </div>
+    <p id="statusHint">提示：情绪达到 60 解锁故事，达到 90 获得 1 点微光。</p>
 
-      <div class="actions">
-        <button type="button" data-drink="tea">热茶（+15）</button>
-        <button type="button" data-drink="coffee">咖啡（+5）</button>
-        <button type="button" data-drink="sweetSoup">糖水（+10）</button>
-        <button type="button" id="resetBtn">重新开始一天</button>
-      </div>
-    </section>
+    <button type="button" data-drink="tea">热茶（+15）</button>
+    <button type="button" data-drink="coffee">咖啡（+5）</button>
+    <button type="button" data-drink="sweetSoup">糖水（+10）</button>
+    <button type="button" id="resetBtn">重新开始一天</button>
   </main>
 
   <script type="module" src="./src/main.js"></script>
