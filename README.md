@@ -60,7 +60,9 @@ night-station/
 - 无后端
 - 无构建工具
 
-## 本地运行
+
+```bash
+python3 -m http.server 5173
 
 直接打开 index.html。
 
