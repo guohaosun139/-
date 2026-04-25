@@ -62,15 +62,9 @@ night-station/
 
 ## 本地运行
 
-直接打开 index.html。
-
-或使用本地静态服务器：
-
 python3 -m http.server 5173
 
-然后访问：
-
-http://localhost:5173
+然后访问 http://localhost:5173
 
 ## 当前状态
 
