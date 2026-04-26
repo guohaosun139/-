@@ -184,6 +184,28 @@
       border: 1px solid rgba(148, 163, 184, 0.2);
     }
 
+    .visitor-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.88);
+      border: 1px solid rgba(191, 219, 254, 0.18);
+      color: #dbeafe;
+      font-size: 14px;
+    }
+
+    .visitor-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.72);
+    }
+
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -279,11 +301,6 @@
         padding: 14px;
       }
 
-      .header,
-      .panel {
-        grid-template-columns: 1fr;
-      }
-
       .header {
         display: block;
       }
@@ -329,6 +346,10 @@
 
     <section class="panel">
       <article class="card">
+        <div class="visitor-chip">
+          今夜来客：<strong id="visitorName">夜归人</strong>
+        </div>
+
         <div class="stats">
           <div class="stat">
             <span class="stat-label">当前情绪值</span>
