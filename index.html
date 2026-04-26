@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>夜归小站 Night Station - MVP</title>
+    <style>
+      :root {
+        --night-1: #050912;
+        --night-2: #0c1630;
+        --night-3: #17284c;
+        --panel: rgba(17, 28, 52, 0.86);
+        --panel-edge: rgba(170, 212, 255, 0.2);
+        --text-main: #ecf3ff;
+        --text-sub: #aab9d8;
+        --warm: #ffd18a;
+        --warm-soft: rgba(255, 209, 138, 0.2);
+        --tea: #67d7b8;
+        --coffee: #d3a471;
+        --sweet: #8fd6ff;
+        --good: #87f3be;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at 18% 12%, rgba(86, 129, 208, 0.23), transparent 45%),
+          radial-gradient(circle at 82% 16%, rgba(255, 197, 120, 0.12), transparent 30%),
+          linear-gradient(160deg, var(--night-1), var(--night-2) 55%, var(--night-3));
+        display: grid;
+        place-items: center;
+        padding: 18px;
+      }
+
+      .station {
+        width: min(940px, 100%);
+        border-radius: 22px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(19, 32, 58, 0.92), rgba(8, 15, 28, 0.94));
+        border: 1px solid var(--panel-edge);
+        box-shadow: 0 24px 52px rgba(0, 0, 0, 0.52);
+      }
+
+      .header {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(170, 212, 255, 0.12);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .title {
+        margin: 0;
+        font-size: clamp(1rem, 1vw + 0.85rem, 1.25rem);
+      }
+
+      .meta {
+        color: var(--text-sub);
+        font-size: 0.88rem;
+      }
+
+      .scene {
+        position: relative;
+        height: 260px;
+        border-bottom: 1px solid rgba(170, 212, 255, 0.12);
+        background:
+          radial-gradient(circle at 22% 20%, rgba(255, 209, 138, 0.22), transparent 34%),
+          radial-gradient(circle at 82% 18%, rgba(235, 244, 255, 0.18), transparent 25%),
+          linear-gradient(180deg, #13264d 0%, #0c1732 62%, #0a1022 100%);
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at 70% 14%, rgba(255, 255, 255, 0.12) 0 2px, transparent 3px),
+          radial-gradient(circle at 58% 26%, rgba(255, 255, 255, 0.08) 0 1px, transparent 2px),
+          radial-gradient(circle at 88% 24%, rgba(255, 255, 255, 0.09) 0 1px, transparent 2px);
+      }
+
+      .lamp-glow {
+        position: absolute;
+        left: 88px;
+        top: 34px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 209, 138, 0.36) 0%, rgba(255, 209, 138, 0) 72%);
+      }
+
+      .moon {
+        position: absolute;
+        top: 24px;
+        right: 36px;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: #f2f6ff;
+        box-shadow: 0 0 22px rgba(233, 243, 255, 0.8);
+      }
+
+
+      .booth {
+        position: absolute;
+        right: 110px;
+        bottom: 78px;
+        width: 180px;
+        height: 118px;
+        border-radius: 14px 14px 6px 6px;
+        background: linear-gradient(180deg, #314f83, #253d69);
+        border: 1px solid rgba(170, 212, 255, 0.22);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
+      }
+
+      .booth::before {
+        content: "夜归小站";
+        position: absolute;
+        top: -22px;
+        left: 18px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        color: #ffe7c3;
+        border: 1px solid rgba(255, 209, 138, 0.55);
+        background: rgba(76, 47, 23, 0.88);
+      }
+
+      .window {
+        position: absolute;
+        left: 18px;
+        top: 18px;
+        width: 98px;
+        height: 54px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 209, 138, 0.58);
+        background: linear-gradient(180deg, rgba(255, 229, 188, 0.42), rgba(255, 196, 118, 0.2));
+        box-shadow: 0 0 14px rgba(255, 209, 138, 0.2);
+      }
+
+      .counter {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -12px;
+        height: 24px;
+        border-radius: 6px;
+        background: linear-gradient(180deg, #78522f, #5f4024);
+        border: 1px solid rgba(255, 209, 138, 0.32);
+      }
+
+      .platform {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 88px;
+        background: linear-gradient(180deg, #1f315c, #122141);
+      }
+
+      .visitor {
+        position: absolute;
+        left: 132px;
+        bottom: 58px;
+        width: 78px;
+        height: 112px;
+        border-radius: 26px 26px 14px 14px;
+        background: linear-gradient(180deg, #435f99, #2e4678);
+        border: 2px solid rgba(233, 244, 255, 0.28);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+      }
+
+      .visitor::before {
+        content: "";
+        position: absolute;
+        width: 42px;
+        height: 42px;
+        left: 18px;
+        top: -40px;
+        border-radius: 50%;
+        background: #dbe7ff;
+      }
+
+      .content {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 14px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .visitor-chip {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 209, 138, 0.45);
+        background: rgba(70, 45, 22, 0.5);
+        color: #ffe8c3;
+        font-size: 0.84rem;
+      }
+
+
+      .stat {
+        border-radius: 12px;
+        padding: 10px 12px;
+        border: 1px solid rgba(170, 212, 255, 0.22);
+        background: linear-gradient(180deg, rgba(31, 53, 92, 0.82), rgba(20, 34, 60, 0.9));
+      }
+
+      .stat .label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text-sub);
+        font-size: 0.82rem;
+      }
+
+      .value {
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .value.good {
+        color: var(--good);
+      }
+
+      .story {
+        margin: 0;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 209, 138, 0.35);
+        background: linear-gradient(180deg, rgba(78, 53, 24, 0.24), rgba(44, 33, 22, 0.3));
+        padding: 12px;
+        min-height: 92px;
+        line-height: 1.65;
+        color: #f6ebdd;
+      }
+
+      .story::before {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-right: 8px solid rgba(255, 209, 138, 0.45);
+        margin-right: 8px;
+        transform: translateY(1px);
+      }
+
+      .hint {
+        margin: 10px 0 0;
+        color: var(--text-sub);
+        font-size: 0.84rem;
+      }
+
+      .actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      button {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(170, 212, 255, 0.28);
+        padding: 11px 12px;
+        color: var(--text-main);
+        background: linear-gradient(180deg, #2a4476, #20355e);
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+        transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 10px rgba(0, 0, 0, 0.22);
+      }
+
+      button[data-drink="tea"] {
+        border-color: rgba(103, 215, 184, 0.42);
+        background: linear-gradient(180deg, rgba(30, 115, 103, 0.95), rgba(20, 81, 73, 0.95));
+      }
+
+      button[data-drink="coffee"] {
+        border-color: rgba(211, 164, 113, 0.45);
+        background: linear-gradient(180deg, rgba(125, 86, 53, 0.95), rgba(95, 64, 38, 0.95));
+      }
+
+      button[data-drink="sweetSoup"] {
+        border-color: rgba(143, 214, 255, 0.42);
+        background: linear-gradient(180deg, rgba(48, 95, 136, 0.95), rgba(35, 72, 108, 0.95));
+      }
+
+      button:hover {
+        filter: brightness(1.08);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .reset-btn {
+        margin-top: 4px;
+        border-color: rgba(255, 209, 138, 0.6);
+        background: linear-gradient(180deg, rgba(140, 89, 43, 0.95), rgba(96, 60, 27, 0.95));
+      }
+
+      .drink-tip {
+        margin: 8px 0 0;
+        color: var(--text-sub);
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 760px) {
+        body {
+          padding: 10px;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .scene {
+          height: 216px;
+        }
+
+        .visitor {
+          left: 72px;
+          width: 72px;
+          height: 106px;
+        }
+
+        .booth {
+          right: 30px;
+          width: 148px;
+          height: 104px;
+        }
+
+        .content {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="station">
+      <header class="header">
+        <h1 class="title">夜归小站 Night Station · 第一阶段 MVP</h1>
+        <span class="meta">夜色深了，给晚归的人一杯温热的安慰</span>
+      </header>
+
+      <section class="scene" aria-label="夜晚小站场景">
+        <div class="lamp-glow" aria-hidden="true"></div>
+        <div class="moon" aria-hidden="true"></div>
+        <div class="booth" aria-hidden="true">
+          <div class="window"></div>
+          <div class="counter"></div>
+        </div>
+        <div class="visitor" aria-label="访客"></div>
+        <div class="platform" aria-hidden="true"></div>
+      </section>
+
+      <section class="content">
+        <article class="card">
+          <div class="stats">
+            <div class="stat">
+              <span class="label">当前情绪值</span>
+              <span id="moodValue" class="value">0</span>
+            </div>
+            <div class="stat">
+              <span class="label">微光数量</span>
+              <span id="glowValue" class="value">0</span>
+            </div>
+          </div>
+          <p class="visitor-chip">今夜访客：<span id="visitorName">访客</span></p>
+          <p id="storyText" class="story">访客沉默地坐在站台边，似乎在等一句可以落地的话。</p>
+          <p id="statusHint" class="hint">提示：情绪达到 60 解锁故事，达到 90 获得 1 点微光。</p>
+        </article>
+
+        <aside class="card">
+          <div class="actions">
+            <button type="button" data-drink="tea">热茶（+15）</button>
+            <button type="button" data-drink="coffee">咖啡（+5）</button>
+            <button type="button" data-drink="sweetSoup">糖水（+10）</button>
+            <button id="resetBtn" type="button" class="reset-btn">重新开始一天</button>
+          </div>
+          <p class="drink-tip">每一杯饮品都是一句深夜问候。</p>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
