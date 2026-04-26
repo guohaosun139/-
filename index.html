@@ -2,26 +2,364 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>夜归小站 Night Station</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(91, 141, 239, 0.22), transparent 28%),
+        radial-gradient(circle at 78% 16%, rgba(252, 211, 77, 0.16), transparent 18%),
+        linear-gradient(180deg, #07111f 0%, #0b1324 48%, #030712 100%);
+      color: #eef4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    .station {
+      width: min(960px, 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.52);
+      backdrop-filter: blur(12px);
+    }
+
+    .header {
+      padding: 22px 26px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      background: linear-gradient(90deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.72));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 34px);
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      color: #bad4ff;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .scene {
+      position: relative;
+      min-height: 330px;
+      background:
+        radial-gradient(circle at 72% 20%, rgba(253, 224, 71, 0.28), transparent 14%),
+        linear-gradient(180deg, #172554 0%, #0f172a 55%, #020617 100%);
+      overflow: hidden;
+    }
+
+    .moon {
+      position: absolute;
+      top: 42px;
+      right: 70px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: #f8fafc;
+      box-shadow: 0 0 46px rgba(248, 250, 252, 0.72);
+      opacity: 0.88;
+    }
+
+    .window {
+      position: absolute;
+      left: 50px;
+      top: 58px;
+      width: 150px;
+      height: 96px;
+      border-radius: 18px;
+      background: rgba(250, 204, 21, 0.12);
+      border: 1px solid rgba(253, 224, 71, 0.35);
+      box-shadow: inset 0 0 36px rgba(253, 224, 71, 0.12);
+    }
+
+    .window::before,
+    .window::after {
+      content: "";
+      position: absolute;
+      background: rgba(253, 224, 71, 0.26);
+    }
+
+    .window::before {
+      width: 1px;
+      height: 100%;
+      left: 50%;
+      top: 0;
+    }
+
+    .window::after {
+      height: 1px;
+      width: 100%;
+      top: 50%;
+      left: 0;
+    }
+
+    .counter {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 28px;
+      height: 118px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.34);
+    }
+
+    .counter::before {
+      content: "NIGHT STATION";
+      position: absolute;
+      left: 24px;
+      top: 20px;
+      color: rgba(191, 219, 254, 0.34);
+      font-size: 12px;
+      letter-spacing: 0.22em;
+    }
+
+    .lamp {
+      position: absolute;
+      left: 50%;
+      bottom: 112px;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 80px;
+      border-radius: 60px 60px 10px 10px;
+      background: rgba(251, 191, 36, 0.22);
+      filter: blur(1px);
+      box-shadow: 0 0 56px rgba(251, 191, 36, 0.45);
+    }
+
+    .visitor {
+      position: absolute;
+      left: 50%;
+      bottom: 112px;
+      transform: translateX(-50%);
+      width: 78px;
+      height: 116px;
+      border-radius: 42px 42px 18px 18px;
+      background: linear-gradient(180deg, #cbd5e1, #64748b);
+      border: 2px solid rgba(226, 232, 240, 0.36);
+      box-shadow: 0 22px 34px rgba(0, 0, 0, 0.38);
+    }
+
+    .visitor::before {
+      content: "";
+      position: absolute;
+      top: -44px;
+      left: 14px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #e2e8f0, #94a3b8);
+    }
+
+    .panel {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      padding: 22px;
+      background: rgba(2, 6, 23, 0.46);
+    }
+
+    .card {
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    .stat-label {
+      display: block;
+      color: #93a4c7;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      font-size: 28px;
+      color: #fef3c7;
+    }
+
+    #glowValue.good {
+      color: #86efac;
+    }
+
+    .story {
+      min-height: 106px;
+      padding: 16px;
+      line-height: 1.75;
+      border-radius: 18px;
+      color: #e5e7eb;
+      background:
+        linear-gradient(180deg, rgba(30, 41, 59, 0.88), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(191, 219, 254, 0.16);
+    }
+
+    .hint {
+      color: #bfdbfe;
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 12px 0 0;
+    }
+
+    .actions {
+      display: grid;
+      gap: 12px;
+    }
+
+    .actions-title {
+      margin: 0 0 10px;
+      color: #c7d2fe;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      color: #172033;
+      background: linear-gradient(180deg, #fde68a, #f59e0b);
+      box-shadow: 0 10px 24px rgba(245, 158, 11, 0.18);
+      transition: transform 0.14s ease, filter 0.14s ease;
+    }
+
+    button:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #resetBtn {
+      margin-top: 4px;
+      color: #e0e7ff;
+      background: linear-gradient(180deg, #334155, #1e293b);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: none;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+      }
+
+      .header,
+      .panel {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        display: block;
+      }
+
+      .subtitle {
+        margin-top: 8px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .scene {
+        min-height: 280px;
+      }
+
+      .window {
+        width: 116px;
+        height: 76px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>夜归小站 Night Station</h1>
+  <main class="station">
+    <header class="header">
+      <h1>夜归小站 Night Station</h1>
+      <div class="subtitle">夜色深了，给晚归的人一杯温热的安慰。</div>
+    </header>
 
-  <p>当前情绪值：<strong id="moodValue">30</strong></p>
-  <p>微光数量：<strong id="glowValue">0</strong></p>
+    <section class="scene" aria-label="夜晚小站场景">
+      <div class="moon"></div>
+      <div class="window"></div>
+      <div class="lamp"></div>
+      <div class="visitor" aria-label="夜归访客"></div>
+      <div class="counter"></div>
+    </section>
 
-  <div id="storyText">
-    访客沉默地坐在站台边，似乎在等一句可以落地的话。
-  </div>
+    <section class="panel">
+      <article class="card">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">当前情绪值</span>
+            <strong id="moodValue">30</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">微光数量</span>
+            <strong id="glowValue">0</strong>
+          </div>
+        </div>
 
-  <p id="statusHint">
-    提示：情绪达到 60 解锁故事，达到 90 获得 1 点微光。
-  </p>
+        <div id="storyText" class="story">
+          访客沉默地坐在站台边，似乎在等一句可以落地的话。
+        </div>
 
-  <button type="button" data-drink="tea">热茶（+15）</button>
-  <button type="button" data-drink="coffee">咖啡（+5）</button>
-  <button type="button" data-drink="sweetSoup">糖水（+10）</button>
-  <button type="button" id="resetBtn">重新开始一天</button>
+        <p id="statusHint" class="hint">
+          提示：情绪达到 60 解锁故事，达到 90 获得 1 点微光。
+        </p>
+      </article>
+
+      <aside class="card">
+        <p class="actions-title">今日小站菜单</p>
+        <div class="actions">
+          <button type="button" data-drink="tea">热茶（+15）</button>
+          <button type="button" data-drink="coffee">咖啡（+5）</button>
+          <button type="button" data-drink="sweetSoup">糖水（+10）</button>
+          <button type="button" id="resetBtn">重新开始一天</button>
+        </div>
+      </aside>
+    </section>
+  </main>
 
   <script type="module" src="./src/main.js"></script>
 </body>
